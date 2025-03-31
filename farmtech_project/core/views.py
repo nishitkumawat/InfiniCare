@@ -261,6 +261,10 @@ def index(request):
     """Home page view"""
     return render(request, 'core/index.html')
 
+def logout(request):
+    logout(request)
+    return redirect(request,'index.html')
+
 def signup_view(request):
     """User registration view using HTML forms"""
     if request.method == 'POST':
