@@ -1,0 +1,585 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Infini Care{%
+endblock %} {% block content %} {% load static %}
+<link rel="stylesheet" href="{% static 'css/main.css' %}" />
+
+<style>
+  .animated-header {
+    background-color: rgba(0, 0, 0, 1) !important; /* Dark background */
+  }
+</style>
+<section class="hero py-5">
+  <!-- Animated Text Header -->
+  <div class="animated-header mb-5 text-center py-5 bg-gradient">
+    <h1 class="display-3 fw-bold text-white animated-title">Infini Care</h1>
+    <p class="lead my-4 text-white">
+      Welcome to our AI-powered analysis platform for Soil Data Analysis and
+      Health Analysis
+    </p>
+
+    {% if user.is_authenticated %}
+    <div class="mt-5">
+      <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg px-4 me-2"
+        >Go to Dashboard</a
+      >
+      <a href="{% url 'chatbot' %}" class="btn btn-outline-light btn-lg px-4"
+        >Chat with AI Assistant</a
+      >
+    </div>
+    {% else %}
+    <div class="mt-5">
+      <a href="{% url 'signup' %}" class="btn btn-light btn-lg px-4 me-2"
+        >Sign Up</a
+      >
+      <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-4"
+        >Login</a
+      >
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Domain Selection Section -->
+  <div class="row justify-content-center mb-5">
+    <div class="col-md-10">
+      <h2 class="text-center mb-4">Choose Your Domain</h2>
+      <div class="row g-4">
+        <!-- Digital Farming Card -->
+        <div class="col-lg-6">
+          <div class="card h-100 shadow-lg border-0 hover-card">
+            <img
+              src="{% static 'images/farming_illustration.svg' %}"
+              class="card-img-top"
+              alt="Digital Farming Illustration"
+            />
+            <div class="card-body p-5">
+              <div class="text-center mb-4">
+                <div
+                  class="domain-icon rounded-circle bg-success bg-opacity-10 p-3 d-inline-block mb-3"
+                >
+                  <i class="fas fa-leaf fa-4x text-success"></i>
+                </div>
+                <h3 class="card-title">Digital Farming</h3>
+                <p class="text-muted mb-4">
+                  AI-powered soil health analysis & optimization
+                </p>
+              </div>
+
+              <ul class="list-unstyled mb-4">
+                <li class="mb-2">
+                  <i class="fas fa-check text-success me-2"></i> Optical
+                  spectrometer data analysis
+                </li>
+                <li class="mb-2">
+                  <i class="fas fa-check text-success me-2"></i> Multi-parameter
+                  soil sensing
+                </li>
+                <li class="mb-2">
+                  <i class="fas fa-check text-success me-2"></i> Moisture
+                  content measurement
+                </li>
+                <li class="mb-2">
+                  <i class="fas fa-check text-success me-2"></i> Nutrient level
+                  optimization
+                </li>
+                <li class="mb-2">
+                  <i class="fas fa-check text-success me-2"></i> AI-powered
+                  recommendations
+                </li>
+              </ul>
+
+              {% if user.is_authenticated %}
+              <div class="d-grid">
+                <a
+                  href="{% url 'upload_soil_data' %}"
+                  class="btn btn-success btn-lg"
+                  >Upload Farming Data</a
+                >
+              </div>
+              {% else %}
+              <div class="d-grid">
+                <a href="{% url 'signup' %}" class="btn btn-success btn-lg"
+                  >Get Started with Farming</a
+                >
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Digital Healthcare Card -->
+        <div class="col-lg-6">
+          <div class="card h-100 shadow-lg border-0 hover-card">
+            <img
+              src="{% static 'images/healthcare_illustration.svg' %}"
+              class="card-img-top"
+              alt="Digital Healthcare Illustration"
+            />
+            <div class="card-body p-5">
+              <div class="text-center mb-4">
+                <div
+                  class="domain-icon rounded-circle bg-purple bg-opacity-10 p-3 d-inline-block mb-3"
+                  style="background-color: rgba(111, 66, 193, 0.1)"
+                >
+                  <i
+                    class="fas fa-heartbeat fa-4x text-purple"
+                    style="color: #6f42c1"
+                  ></i>
+                </div>
+                <h3 class="card-title">Digital Healthcare</h3>
+                <p class="text-muted mb-4">
+                  Early cancer detection through advanced imaging
+                </p>
+              </div>
+
+              <ul class="list-unstyled mb-4">
+                <li class="mb-2">
+                  <i
+                    class="fas fa-check text-purple me-2"
+                    style="color: #6f42c1"
+                  ></i>
+                  Breast cancer detection
+                </li>
+                <li class="mb-2">
+                  <i
+                    class="fas fa-check text-purple me-2"
+                    style="color: #6f42c1"
+                  ></i>
+                  Throat cancer screening
+                </li>
+                <li class="mb-2">
+                  <i
+                    class="fas fa-check text-purple me-2"
+                    style="color: #6f42c1"
+                  ></i>
+                  Skin cancer analysis
+                </li>
+                <li class="mb-2">
+                  <i
+                    class="fas fa-check text-purple me-2"
+                    style="color: #6f42c1"
+                  ></i>
+                  Spectrometer data processing
+                </li>
+                <li class="mb-2">
+                  <i
+                    class="fas fa-check text-purple me-2"
+                    style="color: #6f42c1"
+                  ></i>
+                  Digital imaging insights
+                </li>
+              </ul>
+
+              {% if user.is_authenticated %}
+              <div class="d-grid">
+                <a
+                  href="{% url 'upload_healthcare_data' %}"
+                  class="btn btn-lg"
+                  style="background-color: #6f42c1; color: white"
+                  >Upload Healthcare Data</a
+                >
+              </div>
+              {% else %}
+              <div class="d-grid">
+                <a
+                  href="{% url 'signup' %}"
+                  class="btn btn-lg"
+                  style="background-color: #6f42c1; color: white"
+                  >Get Started with Healthcare</a
+                >
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="my-5" />
+
+<section class="about-platform py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-5">About Our Platform</h2>
+
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <h3>Advanced AI Analysis</h3>
+        <p class="lead">
+          Our platform leverages cutting-edge AI to process and analyze data
+          from multiple sources.
+        </p>
+
+        <div class="d-flex mb-4">
+          <div class="feature-icon me-3">
+            <i class="fas fa-brain text-primary fa-2x"></i>
+          </div>
+          <div>
+            <h4 class="h5">Gemini AI Integration</h4>
+            <p>
+              Powerful AI models analyze patterns and provide actionable
+              insights for both domains.
+            </p>
+          </div>
+        </div>
+
+        <div class="d-flex mb-4">
+          <div class="feature-icon me-3">
+            <i class="fas fa-chart-line text-success fa-2x"></i>
+          </div>
+          <div>
+            <h4 class="h5">Data Visualization</h4>
+            <p>
+              Interactive charts and comprehensive dashboards help you
+              understand results at a glance.
+            </p>
+          </div>
+        </div>
+
+        <div class="d-flex">
+          <div class="feature-icon me-3">
+            <i class="fas fa-robot text-info fa-2x"></i>
+          </div>
+          <div>
+            <h4 class="h5">AI Assistant</h4>
+            <p>
+              Get explanations, recommendations and answers to your questions
+              from our AI chatbot.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="text-center p-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 800 600"
+            width="100%"
+            height="350"
+          >
+            <rect width="800" height="600" fill="#f8f9fa" />
+            <!-- Central AI node -->
+            <circle cx="400" cy="300" r="80" fill="#6f42c1" opacity="0.6" />
+            <circle cx="400" cy="300" r="60" fill="#0d6efd" opacity="0.6" />
+            <circle cx="400" cy="300" r="40" fill="#198754" opacity="0.6" />
+
+            <!-- Farming node -->
+            <circle cx="200" cy="200" r="60" fill="#198754" opacity="0.7" />
+            <path
+              d="M200,170 Q200,150 220,170 M210,170 L210,200"
+              stroke="white"
+              stroke-width="3"
+              fill="none"
+            />
+            <path
+              d="M180,170 Q180,150 200,170"
+              stroke="white"
+              stroke-width="3"
+              fill="none"
+            />
+
+            <!-- Healthcare node -->
+            <circle cx="600" cy="200" r="60" fill="#6f42c1" opacity="0.7" />
+            <path
+              d="M580,200 L620,200 M600,180 L600,220"
+              stroke="white"
+              stroke-width="5"
+              fill="none"
+            />
+
+            <!-- Data node -->
+            <rect
+              x="250"
+              y="400"
+              width="100"
+              height="80"
+              rx="10"
+              fill="#0d6efd"
+              opacity="0.7"
+            />
+            <line
+              x1="270"
+              y1="430"
+              x2="330"
+              y2="430"
+              stroke="white"
+              stroke-width="3"
+            />
+            <line
+              x1="270"
+              y1="450"
+              x2="320"
+              y2="450"
+              stroke="white"
+              stroke-width="3"
+            />
+            <line
+              x1="270"
+              y1="470"
+              x2="310"
+              y2="470"
+              stroke="white"
+              stroke-width="3"
+            />
+
+            <!-- Results node -->
+            <rect
+              x="450"
+              y="400"
+              width="100"
+              height="80"
+              rx="10"
+              fill="#fd7e14"
+              opacity="0.7"
+            />
+            <line
+              x1="470"
+              y1="430"
+              x2="530"
+              y2="430"
+              stroke="white"
+              stroke-width="3"
+            />
+            <line
+              x1="470"
+              y1="450"
+              x2="520"
+              y2="450"
+              stroke="white"
+              stroke-width="3"
+            />
+            <line
+              x1="470"
+              y1="470"
+              x2="510"
+              y2="470"
+              stroke="white"
+              stroke-width="3"
+            />
+
+            <!-- Connecting lines -->
+            <line
+              x1="260"
+              y1="200"
+              x2="340"
+              y2="260"
+              stroke="#198754"
+              stroke-width="3"
+            />
+            <line
+              x1="540"
+              y1="200"
+              x2="460"
+              y2="260"
+              stroke="#6f42c1"
+              stroke-width="3"
+            />
+            <line
+              x1="400"
+              y1="380"
+              x2="400"
+              y2="450"
+              stroke="#0d6efd"
+              stroke-width="3"
+            />
+            <line
+              x1="350"
+              y1="440"
+              x2="450"
+              y2="440"
+              stroke="#fd7e14"
+              stroke-width="3"
+            />
+
+            <!-- Data flow animations -->
+            <circle cx="300" cy="230" r="5" fill="white">
+              <animate
+                attributeName="cx"
+                from="260"
+                to="340"
+                dur="3s"
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="cy"
+                from="200"
+                to="260"
+                dur="3s"
+                repeatCount="indefinite"
+              />
+            </circle>
+
+            <circle cx="500" cy="230" r="5" fill="white">
+              <animate
+                attributeName="cx"
+                from="540"
+                to="460"
+                dur="3s"
+                repeatCount="indefinite"
+              />
+              <animate
+                attributeName="cy"
+                from="200"
+                to="260"
+                dur="3s"
+                repeatCount="indefinite"
+              />
+            </circle>
+
+            <circle cx="400" cy="415" r="5" fill="white">
+              <animate
+                attributeName="cy"
+                from="380"
+                to="450"
+                dur="2s"
+                repeatCount="indefinite"
+              />
+            </circle>
+
+            <circle cx="400" cy="440" r="5" fill="white">
+              <animate
+                attributeName="cx"
+                from="350"
+                to="450"
+                dur="2s"
+                repeatCount="indefinite"
+              />
+            </circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="my-5" />
+
+<section class="contact">
+  <h2 class="text-center mb-5">Have Questions?</h2>
+  <div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+      <p class="lead">
+        Our AI assistant is ready to help with any questions about our platform,
+        whether for farming or healthcare.
+      </p>
+      <a href="{% url 'chatbot' %}" class="btn btn-lg btn-outline-primary"
+        >Chat with our AI Assistant</a
+      >
+    </div>
+  </div>
+</section>
+
+<style>
+  .hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .hover-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+  }
+  .domain-icon {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Animated header styles */
+  .animated-header {
+    background: linear-gradient(135deg, #1a237e, #4a148c, #1b5e20);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .animated-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    animation: shine 3s infinite;
+  }
+
+  @keyframes shine {
+    0% {
+      left: -100%;
+    }
+    20% {
+      left: 100%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+
+  .animated-title {
+    display: block;
+    position: relative;
+    animation: fadeInUp 1.2s ease-out;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animated-header p {
+    animation: fadeIn 2s ease-out;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animated-header .btn {
+    animation: pulseButton 2s infinite;
+    animation-delay: 1s;
+  }
+
+  @keyframes pulseButton {
+    0% {
+      transform: scale(1);
+    }
+    5% {
+      transform: scale(1.05);
+    }
+    10% {
+      transform: scale(1);
+    }
+    15% {
+      transform: scale(1.05);
+    }
+    20% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+</style>
+{% endblock %}

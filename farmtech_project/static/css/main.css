@@ -1,0 +1,136 @@
+/* Global Styles */
+:root {
+  --primary-color: #0d6efd;
+  --success-color: #198754;
+  --info-color: #0dcaf0;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --light-color: #f8f9fa;
+  --dark-color: #212529;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+/* Hero section */
+.hero {
+  background-color: white;
+  border-radius: 10px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Card styling */
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  border-top-left-radius: 10px !important;
+  border-top-right-radius: 10px !important;
+}
+
+/* Feature icons */
+.feature-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(13, 110, 253, 0.1);
+  color: var(--primary-color);
+}
+
+/* Dashboard styling */
+.stat-card {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.stat-card .card-body {
+  padding: 1.5rem;
+}
+
+.stat-card .display-4 {
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+/* Analysis results styling */
+.soil-health-gauge {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.gauge-label {
+  font-weight: 600;
+  color: #6c757d;
+}
+
+/* Form styling */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Button styling */
+.btn {
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  border-color: var(--success-color);
+}
+
+/* Footer styling */
+footer {
+  margin-top: 3rem;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+.animated-header {
+  background: url("images/bg.png") no-repeat center center !important;
+  background-size: cover;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero {
+    text-align: center;
+    padding: 1.5rem;
+  }
+
+  .d-md-flex {
+    justify-content: center !important;
+  }
+
+  .stat-card {
+    margin-bottom: 1rem;
+  }
+}

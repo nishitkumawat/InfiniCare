@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Healthcare Data - Reve Digital Healthcare{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Upload Healthcare Data</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h5 class="alert-heading">Supported Data Types:</h5>
+                    <ul class="mb-0">
+                        <li><strong>Image Files:</strong> Upload JPG, PNG, or other image files for cancer screening and detection</li>
+                        <li><strong>Optical Spectrometer Data:</strong> Upload .csv, .txt, .asc, or other spectrometer output files</li>
+                    </ul>
+                    <div class="mt-2 text-success fw-bold">
+                        <i class="fas fa-info-circle"></i> Image files are now automatically detected regardless of selected data type!
+                    </div>
+                </div>
+                
+                <!-- HTML form for file upload -->
+                <form method="post" action="{% url 'upload_data' %}?type=healthcare" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="data_type" class="form-label">Data Type</label>
+                        <select class="form-select" id="data_type" name="data_type" required>
+                            <option value="" selected disabled>Select data type</option>
+                            <option value="spectrometer">Optical Spectrometer Data</option>
+                            <option value="image">Digital Camera Image</option>
+                        </select>
+                        {{ form.data_type.errors }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="cancer_type" class="form-label">Cancer Type</label>
+                        <select class="form-select" id="cancer_type" name="cancer_type" required>
+                            <option value="" selected disabled>Select cancer type</option>
+                            <option value="breast">Breast Cancer</option>
+                            <option value="throat">Throat Cancer</option>
+                            <option value="skin">Skin Cancer</option>
+                            <option value="other">Other Cancer Type</option>
+                            <option value="screening">General Screening</option>
+                        </select>
+                        {{ form.cancer_type.errors }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="patient_id" class="form-label">Patient ID</label>
+                        <input type="text" class="form-control" id="patient_id" name="patient_id" required>
+                        {{ form.patient_id.errors }}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="patient_age" class="form-label">Patient Age</label>
+                            <input type="number" class="form-control" id="patient_age" name="patient_age" min="0" max="120">
+                            {{ form.patient_age.errors }}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="patient_gender" class="form-label">Patient Gender</label>
+                            <select class="form-select" id="patient_gender" name="patient_gender">
+                                <option value="" selected>Prefer not to say</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                            {{ form.patient_gender.errors }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="data_file" class="form-label">Data File or Image</label>
+                        <input type="file" class="form-control" id="data_file" name="data_file" required>
+                        <div class="form-text">Supported formats: JPG, JPEG, PNG for images | CSV, TXT, JSON, ASC for data (max 15MB)</div>
+                        {{ form.data_file.errors }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes (Optional)</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3"
+                                  placeholder="Add any relevant information about the data collection..."></textarea>
+                        {{ form.notes.errors }}
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-2"></i> Upload and Analyze
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Tips Section -->
+        <div class="card mt-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Tips for Better Results</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-image fa-2x text-success mb-2"></i>
+                            <h6>Clear Images</h6>
+                            <p class="small">Ensure images are well-lit, in-focus, and show the area of interest clearly.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-ruler fa-2x text-primary mb-2"></i>
+                            <h6>Consistent Format</h6>
+                            <p class="small">For spectroscopic data, ensure wavelength ranges are consistent and calibrated.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-info-circle fa-2x text-info mb-2"></i>
+                            <h6>Add Context</h6>
+                            <p class="small">Include notes about patient history, symptoms, and other relevant information.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Preview file name when selected
+    document.getElementById('data_file').addEventListener('change', function(e) {
+        let fileName = e.target.files[0].name;
+        let fileSize = e.target.files[0].size;
+        
+        // Convert bytes to KB or MB
+        let formattedSize;
+        if (fileSize < 1024 * 1024) {
+            formattedSize = (fileSize / 1024).toFixed(2) + ' KB';
+        } else {
+            formattedSize = (fileSize / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+        
+        e.target.nextElementSibling.innerHTML = `Selected: ${fileName} (${formattedSize})`;
+    });
+</script>
+{% endblock %}

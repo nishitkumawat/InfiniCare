@@ -1,0 +1,332 @@
+{% extends 'base.html' %}
+
+{% block title %}Soil Analysis Results - Reve Digital Farming{% endblock %}
+
+{% block extra_head %}
+<style>
+    .analysis-visualization {
+        max-width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        margin-bottom: 20px;
+        display: block;
+    }
+    
+    pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #28a745;
+        font-family: monospace;
+        font-size: 0.9em;
+    }
+    
+    .nutrient-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px dashed #dee2e6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+    </a>
+</div>
+
+{% if error %}
+<div class="alert alert-warning">
+    <h4 class="alert-heading">Analysis Not Available</h4>
+    <p>{{ error }}</p>
+    <hr>
+    <p class="mb-0">Try uploading your data again or contact support if this issue persists.</p>
+</div>
+{% else %}
+
+<div class="card mb-4 shadow">
+    <div class="card-header bg-primary text-white">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="mb-0">{{ data.farm_name }} Analysis Results</h3>
+            </div>
+            <div class="col-auto">
+                <span class="badge bg-light text-dark">
+                    {{ data.get_data_type_display }}
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <p><strong>Location:</strong> {{ data.location }}</p>
+                <p><strong>Upload Date:</strong> {{ data.upload_date|date:"F d, Y" }}</p>
+                <p><strong>Analysis Date:</strong> {{ analysis.analysis_date|date:"F d, Y" }}</p>
+                {% if data.notes %}
+                <p><strong>Notes:</strong> {{ data.notes }}</p>
+                {% endif %}
+            </div>
+            <div class="col-md-6 text-md-end">
+                <div class="soil-health-gauge">
+                    <div class="gauge-label mb-2">Soil Health Score</div>
+                    <div class="gauge-value display-4 fw-bold">
+                        {{ soil_health_score|floatformat:1 }}
+                        <span class="fs-5">/ 100</span>
+                    </div>
+                    <div class="progress" style="height: 15px;">
+                        <div class="progress-bar 
+                            {% if soil_health_score >= 80 %}
+                                bg-success
+                            {% elif soil_health_score >= 60 %}
+                                bg-info
+                            {% elif soil_health_score >= 40 %}
+                                bg-warning
+                            {% else %}
+                                bg-danger
+                            {% endif %}"
+                            role="progressbar" style="width: {{ soil_health_score }}%"
+                            aria-valuenow="{{ soil_health_score }}" aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                    <div class="gauge-description small text-muted mt-1">
+                        {% if soil_health_score >= 80 %}
+                            Excellent soil health
+                        {% elif soil_health_score >= 60 %}
+                            Good soil health
+                        {% elif soil_health_score >= 40 %}
+                            Fair soil health
+                        {% else %}
+                            Poor soil health
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <div class="row g-4">
+            <!-- Soil Parameters -->
+            <div class="col-lg-6">
+                <h4 class="mb-3">Soil Parameters</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tbody>
+                            {% if analysis.moisture_content is not None %}
+                            <tr>
+                                <th>Moisture Content</th>
+                                <td>{{ analysis.moisture_content|floatformat:1 }}%</td>
+                                <td>
+                                    {% if analysis.moisture_content > 30 %}
+                                        <span class="badge bg-info">High</span>
+                                    {% elif analysis.moisture_content > 15 %}
+                                        <span class="badge bg-success">Optimal</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Low</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endif %}
+                            
+                            {% if analysis.ph_level is not None %}
+                            <tr>
+                                <th>pH Level</th>
+                                <td>{{ analysis.ph_level|floatformat:1 }}</td>
+                                <td>
+                                    {% if analysis.ph_level > 7.5 %}
+                                        <span class="badge bg-warning text-dark">Alkaline</span>
+                                    {% elif analysis.ph_level >= 6.2 and analysis.ph_level <= 7.5 %}
+                                        <span class="badge bg-success">Optimal</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Acidic</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endif %}
+                            
+                            {% if analysis.organic_matter is not None %}
+                            <tr>
+                                <th>Organic Matter</th>
+                                <td>{{ analysis.organic_matter|floatformat:1 }}%</td>
+                                <td>
+                                    {% if analysis.organic_matter > 5 %}
+                                        <span class="badge bg-success">High</span>
+                                    {% elif analysis.organic_matter > 2 %}
+                                        <span class="badge bg-info">Medium</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Low</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Nutrient Levels Chart -->
+            <div class="col-lg-6">
+                <h4 class="mb-3">Nutrient Levels</h4>
+                <canvas id="nutrientChart" height="200"></canvas>
+            </div>
+        </div>
+        
+        <hr>
+        
+        
+        <!-- Recommendations -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <h4 class="mb-3">Recommendations</h4>
+                <div class="p-3 border rounded">
+                    {{ analysis.recommendations|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chat with AI Section -->
+<div class="card shadow">
+    <div class="card-header bg-info text-white">
+        <h4 class="mb-0">Need Help Understanding Your Results?</h4>
+    </div>
+    <div class="card-body text-center py-4">
+        <p class="lead">Our AI assistant can help you understand these results and provide personalized recommendations.</p>
+        <a href="{% url 'chatbot' %}" class="btn btn-info btn-lg">
+            <i class="fas fa-robot me-2"></i> Chat with Our AI Assistant
+        </a>
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+{% if not error %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Nutrient data from analysis
+        const nutrientData = {{ nutrient_data|safe }};
+        
+        // Prepare data for chart
+        const labels = [];
+        const values = [];
+        const colors = [];
+        
+        // Define optimal ranges for common nutrients
+        const optimalRanges = {
+            'N': [20, 40],
+            'P': [15, 30],
+            'K': [20, 40],
+            'Ca': [1000, 2000],
+            'Mg': [50, 100],
+            'S': [10, 20],
+            'Zn': [1, 5],
+            'Fe': [10, 20],
+            'Mn': [5, 15],
+            'Cu': [1, 3],
+            'B': [0.5, 2]
+        };
+        
+        // Process each nutrient
+        for (const [nutrient, value] of Object.entries(nutrientData)) {
+            // Skip non-numeric values
+            if (typeof value !== 'number') continue;
+            
+            // Format nutrient name (capitalize first letter)
+            let formattedName = nutrient;
+            if (nutrient.length > 2) {
+                formattedName = nutrient.charAt(0).toUpperCase() + nutrient.slice(1);
+            }
+            
+            labels.push(formattedName);
+            values.push(value);
+            
+            // Determine color based on optimal range
+            let color;
+            if (optimalRanges[nutrient]) {
+                const [min, max] = optimalRanges[nutrient];
+                if (value < min) {
+                    color = 'rgba(255, 193, 7, 0.7)'; // warning - low
+                } else if (value > max) {
+                    color = 'rgba(23, 162, 184, 0.7)'; // info - high
+                } else {
+                    color = 'rgba(40, 167, 69, 0.7)'; // success - optimal
+                }
+            } else {
+                // Default color if no range defined
+                color = 'rgba(108, 117, 125, 0.7)'; // secondary
+            }
+            
+            colors.push(color);
+        }
+        
+        // Create chart if we have data
+        if (labels.length > 0) {
+            const ctx = document.getElementById('nutrientChart').getContext('2d');
+            const nutrientChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Nutrient Levels',
+                        data: values,
+                        backgroundColor: colors,
+                        borderColor: colors.map(color => color.replace('0.7', '1')),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Level'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const nutrient = context.label;
+                                    const value = context.raw;
+                                    let status = '';
+                                    
+                                    if (optimalRanges[nutrient]) {
+                                        const [min, max] = optimalRanges[nutrient];
+                                        if (value < min) {
+                                            status = ' (Low)';
+                                        } else if (value > max) {
+                                            status = ' (High)';
+                                        } else {
+                                            status = ' (Optimal)';
+                                        }
+                                    }
+                                    
+                                    return `${context.label}: ${value}${status}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            document.getElementById('nutrientChart').innerHTML = '<p class="text-center text-muted">No nutrient data available</p>';
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

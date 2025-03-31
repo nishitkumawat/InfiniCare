@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Soil Data - Reve Digital Farming{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Upload Soil Data</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h5 class="alert-heading">Supported Data Types:</h5>
+                    <ul class="mb-0">
+                        <li><strong>Image Files:</strong> Upload JPG, PNG, or other image files of plant leaves for automatic disease detection</li>
+                        <li><strong>Optical Spectrometer Data:</strong> Upload .csv, .txt, .asc, or other spectrometer output files</li>
+                        <li><strong>Multi-parameter Soil Sensor Data:</strong> Upload files containing multiple soil health parameters</li>
+                        <li><strong>Capacitive Soil Moisture Data:</strong> Upload moisture sensor readings</li>
+                    </ul>
+                    <div class="mt-2 text-success fw-bold">
+                        <i class="fas fa-info-circle"></i> Image files are now automatically detected regardless of selected data type!
+                    </div>
+                </div>
+                
+                <!-- HTML form for file upload -->
+                <form method="post" action="{% url 'upload_data' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="data_type" class="form-label">Data Type</label>
+                        <select class="form-select" id="data_type" name="data_type" required>
+                            <option value="" selected disabled>Select data type</option>
+                            <option value="spectrometer">Optical Spectrometer Data</option>
+                            <option value="multi_param">Multi-parameter Soil Sensor Data</option>
+                            <option value="moisture">Capacitive Soil Moisture Data</option>
+                        </select>
+                        {{ form.data_type.errors }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="farm_name" class="form-label">Farm Name</label>
+                        <input type="text" class="form-control" id="farm_name" name="farm_name" required>
+                        {{ form.farm_name.errors }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" name="location" 
+                               placeholder="e.g., North Field, Block A, etc." required>
+                        {{ form.location.errors }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="data_file" class="form-label">Data File or Image</label>
+                        <input type="file" class="form-control" id="data_file" name="data_file" required>
+                        <div class="form-text">Supported formats: JPG, JPEG, PNG for images | CSV, TXT, JSON, ASC for data (max 15MB)</div>
+                        {{ form.data_file.errors }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes (Optional)</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3"
+                                  placeholder="Add any relevant information about the data collection..."></textarea>
+                        {{ form.notes.errors }}
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-2"></i> Upload and Analyze
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Tips Section -->
+        <div class="card mt-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Tips for Better Results</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-file-csv fa-2x text-success mb-2"></i>
+                            <h6>Clean Data Format</h6>
+                            <p class="small">Ensure your data is properly formatted without missing values or errors.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-ruler fa-2x text-primary mb-2"></i>
+                            <h6>Consistent Measurements</h6>
+                            <p class="small">Take readings at consistent depths and locations for comparable results.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-info-circle fa-2x text-info mb-2"></i>
+                            <h6>Add Context</h6>
+                            <p class="small">Include notes about weather conditions, recent fertilization, etc.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Preview file name when selected
+    document.getElementById('data_file').addEventListener('change', function(e) {
+        let fileName = e.target.files[0].name;
+        let fileSize = e.target.files[0].size;
+        
+        // Convert bytes to KB or MB
+        let formattedSize;
+        if (fileSize < 1024 * 1024) {
+            formattedSize = (fileSize / 1024).toFixed(2) + ' KB';
+        } else {
+            formattedSize = (fileSize / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+        
+        e.target.nextElementSibling.innerHTML = `Selected: ${fileName} (${formattedSize})`;
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Reve Digital
+Platform{% endblock %} {% block content %} {% load static %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container mt-4">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p>
+      Welcome, {{ user.username }}! View your uploaded data and analysis
+      results.
+    </p>
+  </div>
+
+  <div class="row mt-4">
+    <!-- Left Side: Statistics Cards -->
+    <div class="col-md-6">
+      <div class="row">
+        <!-- Soil Stats -->
+        <div class="col-12">
+          <div class="card stat-card">
+            <h5 class="card-header">Soil Data Uploads</h5>
+            <p class="card-body"  >{{ stats.soil_total_uploads }}</p>
+          </div>
+        </div>
+        <div class="col-12 mt-3">
+          <div class="card stat-card">
+            <h5 class="card-header">Soil Analyses Completed</h5>
+            <p class="card-body">{{ stats.soil_total_analyses }}</p>
+          </div>
+        </div>
+
+        <!-- Healthcare Stats -->
+        <div class="col-12 mt-3">
+          <div class="card stat-card">
+            <h5 class="card-header">Healthcare Data Uploads</h5>
+            <p class="card-body">{{ stats.healthcare_total_uploads }}</p>
+          </div>
+        </div>
+        <div class="col-12 mt-3">
+          <div class="card stat-card">
+            <h5 class="card-header">Healthcare Analyses Completed</h5>
+            <p class="card-body">{{ stats.healthcare_total_analyses }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side: Soil Data Analysis Pie Chart -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">Soil Data Analysis</div>
+        <div class="card-body">
+          <canvas id="soilChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Graphs Section -->
+
+    <!-- Recent Data Section -->
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">Recent Soil Data</div>
+          <div class="card-body">
+            {% if recent_soil_data %}
+            <ul>
+              {% for data in recent_soil_data %}
+              <li>{{ data.upload_date }} - {{ data.data_type }}</li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p>No recent soil data available.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">Recent Soil Analysis Results</div>
+          <div class="card-body">
+            {% if recent_soil_results %}
+            <ul>
+              {% for result in recent_soil_results %}
+              <li>
+                {{ result.analysis_date }} - Score: {{ result.soil_health_score
+                }}
+              </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p>No recent soil analyses available.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Soil Data Chart
+        var ctx1 = document.getElementById("soilChart").getContext("2d");
+        new Chart(ctx1, {
+            type: "doughnut",
+            data: {
+                labels: ["Spectrometer", "Multi-Parameter", "Moisture"],
+                datasets: [{
+                    data: [
+                        {{ stats.soil_spectrometer_data }},
+                        {{ stats.soil_multi_param_data }},
+                        {{ stats.soil_moisture_data }}
+                    ],
+                    backgroundColor: ["#28a745", "#007bff", "#ffc107"],
+                }],
+            },
+        });
+
+        // Healthcare Data Chart
+        var ctx2 = document.getElementById("healthcareChart").getContext("2d");
+        new Chart(ctx2, {
+            type: "bar",
+            data: {
+                labels: ["Spectrometer", "Image Data"],
+                datasets: [{
+                    label: "Healthcare Data Count",
+                    data: [
+                        {{ stats.healthcare_spectrometer_data }},
+                        {{ stats.healthcare_image_data }}
+                    ],
+                    backgroundColor: ["#17a2b8", "#ff5722"],
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+            },
+        });
+    });
+  </script>
+  {% endblock %}
+</div>

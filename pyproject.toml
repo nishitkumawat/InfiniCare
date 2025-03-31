@@ -1,0 +1,20 @@
+[project]
+name = "repl-nix-workspace"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.11"
+dependencies = [
+    "django>=5.1.7",
+    "flask-login>=0.6.3",
+    "flask-wtf>=1.2.2",
+    "google-generativeai>=0.8.4",
+    "matplotlib>=3.10.1",
+    "mysqlclient>=2.2.7",
+    "numpy>=2.2.4",
+    "openai>=1.69.0",
+    "opencv-python>=4.11.0.86",
+    "pandas>=2.2.3",
+    "pillow>=11.1.0",
+    "scikit-learn>=1.6.1",
+    "tensorflow>=2.14.0",
+]

@@ -1,0 +1,326 @@
+{% extends 'base.html' %} {% block title %}Cancer Detection Analysis - Reve
+Digital Healthcare{% endblock %} {% block extra_head %}
+<style>
+  .analysis-visualization {
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #6f42c1;
+    font-family: monospace;
+    font-size: 0.9em;
+  }
+
+  .biomarker-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed #dee2e6;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="mb-4">
+  <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">
+    <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+  </a>
+</div>
+
+{% if error %}
+<div class="alert alert-warning">
+  <h4 class="alert-heading">Analysis Not Available</h4>
+  <p>{{ error }}</p>
+  <hr />
+  <p class="mb-0">
+    Try uploading your data again or contact support if this issue persists.
+  </p>
+</div>
+{% else %}
+
+<div class="card mb-4 shadow">
+  <div
+    class="card-header bg-purple text-white"
+    style="background-color: #6f42c1"
+  >
+    <div class="row align-items-center">
+      <div class="col">
+        <h3 class="mb-0">
+          {{ data.get_cancer_type_display }} Screening Results
+        </h3>
+      </div>
+      <div class="col-auto">
+        <span class="badge bg-light text-dark">
+          {{ data.get_data_type_display }}
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <p><strong>Patient ID:</strong> {{ data.patient_id }}</p>
+        {% if data.patient_age %}
+        <p><strong>Age:</strong> {{ data.patient_age }} years</p>
+        {% endif %} {% if data.patient_gender %}
+        <p><strong>Gender:</strong> {{ data.patient_gender|title }}</p>
+        {% endif %}
+        <p><strong>Scan Date:</strong> {{ data.upload_date|date:"F d, Y" }}</p>
+        <p>
+          <strong>Analysis Date:</strong> {{ analysis.analysis_date|date:"F d,
+          Y" }}
+        </p>
+        {% if data.notes %}
+        <p><strong>Clinical Notes:</strong> {{ data.notes }}</p>
+        {% endif %}
+      </div>
+
+      <div class="col-md-6">
+        <div class="row">
+          <!-- Cancer Probability Gauge -->
+          <div class="col-6">
+            <div class="detection-gauge text-center p-3 border rounded h-100">
+              <div class="gauge-label mb-2">Cancer Probability</div>
+              <div class="gauge-value display-4 fw-bold">
+                {{ cancer_probability|floatformat:1 }}<span class="fs-5"
+                  >%</span
+                >
+              </div>
+              <div class="progress" style="height: 15px">
+                <div
+                  class="progress-bar {% if cancer_probability <= 25 %} bg-success {% elif cancer_probability <= 50 %} bg-info {% elif cancer_probability <= 75 %} bg-warning {% else %} bg-danger {% endif %}"
+                  role="progressbar"
+                  style="width: {{ cancer_probability }}%"
+                  aria-valuenow="{{ cancer_probability }}"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                ></div>
+              </div>
+              <div class="gauge-description small text-muted mt-1">
+                {% if cancer_probability <= 25 %} Low probability {% elif
+                cancer_probability <= 50 %} Moderate probability {% elif
+                cancer_probability <= 75 %} High probability {% else %} Very
+                high probability {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Confidence Score Gauge -->
+          <div class="col-6">
+            <div class="confidence-gauge text-center p-3 border rounded h-100">
+              <div class="gauge-label mb-2">Confidence Score</div>
+              <div class="gauge-value display-4 fw-bold">
+                {{ confidence_score|floatformat:1 }}<span class="fs-5">%</span>
+              </div>
+              <div class="progress" style="height: 15px">
+                <div
+                  class="progress-bar bg-secondary"
+                  role="progressbar"
+                  style="width: {{ confidence_score }}%"
+                  aria-valuenow="{{ confidence_score }}"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                ></div>
+              </div>
+              <div class="gauge-description small text-muted mt-1">
+                {% if confidence_score >= 80 %} Very high confidence {% elif
+                confidence_score >= 60 %} High confidence {% elif
+                confidence_score >= 40 %} Moderate confidence {% else %} Low
+                confidence {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="row g-4">
+      <!-- Detected Biomarkers -->
+      <div class="col-lg-6">
+        <h4 class="mb-3">Detected Biomarkers</h4>
+        {% if biomarkers_data %}
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Biomarker</th>
+                <th>Value</th>
+                <th>Significance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for key, value in analysis.biomarkers.items %}
+              <tr>
+                <td>{{ key }}</td>
+                <td>
+                  {% if value|floatformat:2 %} {{ value|floatformat:2 }} {% else
+                  %} {{ value }} {% endif %}
+                </td>
+                <td>
+                  {% if value >= 0.7 %}
+                  <span class="badge bg-danger">High</span>
+                  {% elif value >= 0.5 %}
+                  <span class="badge bg-warning text-dark">Medium</span>
+                  {% else %}
+                  <span class="badge bg-info">Low</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+          No specific biomarkers were detected in this sample.
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Biomarkers Chart -->
+      <div class="col-lg-6">
+        <h4 class="mb-3">Biomarkers Visualization</h4>
+        <canvas id="biomarkersChart" height="200"></canvas>
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- Recommendations -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <h4 class="mb-3">Medical Recommendations</h4>
+        <div class="alert alert-warning">
+          <strong>Disclaimer:</strong> This is an AI-powered preliminary
+          analysis and is not a substitute for professional medical diagnosis.
+          Always consult with qualified healthcare professionals for proper
+          diagnosis and treatment.
+        </div>
+        <div class="p-3 border rounded">
+          {{ analysis.recommendations|linebreaks }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chat with AI Section -->
+<div class="card shadow">
+  <div class="card-header text-white" style="background-color: #6f42c1">
+    <h4 class="mb-0">Need Help Understanding Your Results?</h4>
+  </div>
+  <div class="card-body text-center py-4">
+    <p class="lead">
+      Our AI assistant can help you understand these results and provide
+      additional information.
+    </p>
+    <a
+      href="{% url 'chatbot' %}"
+      class="btn btn-lg"
+      style="background-color: #6f42c1; color: white"
+    >
+      <i class="fas fa-robot me-2"></i> Chat with Our AI Assistant
+    </a>
+  </div>
+</div>
+
+{% endif %} {% endblock %} {% block extra_scripts %} {% if not error %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Biomarkers data from analysis
+      const biomarkersData = {{ biomarkers_data|safe }};
+
+      // Prepare data for chart
+      const labels = [];
+      const values = [];
+      const colors = [];
+
+      // Process each biomarker
+      for (const [biomarker, value] of Object.entries(biomarkersData)) {
+          // Only include numeric values
+          if (typeof value === 'number') {
+              labels.push(biomarker);
+              values.push(value);
+
+              // Determine color based on value
+              let color;
+              if (value >= 0.7) {
+                  color = 'rgba(220, 53, 69, 0.7)'; // danger - high
+              } else if (value >= 0.5) {
+                  color = 'rgba(255, 193, 7, 0.7)'; // warning - medium
+              } else {
+                  color = 'rgba(23, 162, 184, 0.7)'; // info - low
+              }
+
+              colors.push(color);
+          }
+      }
+
+      // Create chart if we have data
+      if (labels.length > 0) {
+          const ctx = document.getElementById('biomarkersChart').getContext('2d');
+          const biomarkersChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: labels,
+                  datasets: [{
+                      label: 'Biomarker Values',
+                      data: values,
+                      backgroundColor: colors,
+                      borderColor: colors.map(color => color.replace('0.7', '1')),
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  scales: {
+                      y: {
+                          beginAtZero: true,
+                          max: 1.0,
+                          title: {
+                              display: true,
+                              text: 'Value (0-1 scale)'
+                          }
+                      }
+                  },
+                  plugins: {
+                      legend: {
+                          display: false
+                      },
+                      tooltip: {
+                          callbacks: {
+                              label: function(context) {
+                                  const value = context.raw;
+                                  let significance = '';
+
+                                  if (value >= 0.7) {
+                                      significance = ' (High significance)';
+                                  } else if (value >= 0.5) {
+                                      significance = ' (Medium significance)';
+                                  } else {
+                                      significance = ' (Low significance)';
+                                  }
+
+                                  return `${context.label}: ${value.toFixed(2)}${significance}`;
+                              }
+                          }
+                      }
+                  }
+              }
+          });
+      } else {
+          document.getElementById('biomarkersChart').innerHTML = '<p class="text-center text-muted">No biomarker data available</p>';
+      }
+  });
+</script>
+{% endif %} {% endblock %}

@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Reve Digital Platform{% endblock %}
+
+{% block extra_head %}
+<style>
+    .login-container {
+        min-height: 70vh;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .login-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-img-overlay {
+        background: linear-gradient(135deg, rgba(13, 110, 253, 0.8) 0%, rgba(111, 66, 193, 0.9) 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .login-form-container {
+        background-color: white;
+        border-radius: 15px;
+        padding: 3rem;
+    }
+    
+    .login-heading {
+        font-weight: 700;
+        color: #343a40;
+        margin-bottom: 1.5rem;
+    }
+    
+    .btn-login {
+        background: linear-gradient(45deg, #0d6efd, #6f42c1);
+        border: none;
+        padding: 0.75rem;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-login:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(13, 110, 253, 0.2);
+    }
+    
+    .form-control {
+        padding: 0.75rem 1.25rem;
+        border-radius: 30px;
+        border: 1px solid #e9ecef;
+        background-color: #f8f9fa;
+    }
+    
+    .form-control:focus {
+        background-color: white;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+        border-color: #0d6efd;
+    }
+    
+    .input-group-text {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 30px 0 0 30px;
+    }
+    
+    .login-art {
+        position: absolute;
+        bottom: -50px;
+        right: -50px;
+        width: 90%;
+        opacity: 0.2;
+        z-index: -1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card login-card">
+                <div class="row g-0">
+                    <!-- Image Side -->
+                    <div class="col-md-6 d-none d-md-block">
+                        <div class="position-relative h-100">
+                            <img src="https://images.unsplash.com/photo-1499529112087-3cb3b73cec95?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" 
+                                 class="img-fluid h-100 w-100" style="object-fit: cover;" alt="Digital platform visualization">
+                            <div class="card-img-overlay text-white">
+                                <div class="px-4">
+                                    <h2 class="display-6 fw-bold mb-3">Welcome Back</h2>
+                                    <p class="lead">Access your Reve Digital Platform dashboard to analyze your farming and healthcare data with AI.</p>
+                                    <div class="mt-5">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="bg-white rounded-circle p-2 me-3">
+                                                <i class="fas fa-leaf text-success"></i>
+                                            </div>
+                                            <div>Soil Analysis & Recommendations</div>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="bg-white rounded-circle p-2 me-3">
+                                                <i class="fas fa-heartbeat" style="color: #6f42c1;"></i>
+                                            </div>
+                                            <div>Cancer Detection Screening</div>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-white rounded-circle p-2 me-3">
+                                                <i class="fas fa-robot text-primary"></i>
+                                            </div>
+                                            <div>AI-Powered Insights</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Side -->
+                    <div class="col-md-6">
+                        <div class="login-form-container position-relative">
+                            <!-- Decorative SVG background shape -->
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" class="login-art">
+                                <path d="M250,50 Q350,50 350,150 Q350,250 250,250 Q150,250 150,150 Q150,50 250,50 Z" 
+                                      fill="#0d6efd" opacity="0.5">
+                                    <animate attributeName="d" 
+                                             dur="20s" 
+                                             repeatCount="indefinite" 
+                                             values="M250,50 Q350,50 350,150 Q350,250 250,250 Q150,250 150,150 Q150,50 250,50 Z;
+                                                    M200,50 Q300,80 320,180 Q340,280 220,280 Q100,280 120,180 Q140,80 200,50 Z;
+                                                    M250,50 Q350,50 350,150 Q350,250 250,250 Q150,250 150,150 Q150,50 250,50 Z" />
+                                </path>
+                            </svg>
+                            
+                            <div class="text-center mb-4">
+                                <h2 class="login-heading">Login to Your Account</h2>
+                                <p class="text-muted">Enter your credentials to access the platform</p>
+                            </div>
+                            
+                            {% if error %}
+                            <div class="alert alert-danger">
+                                {{ error }}
+                            </div>
+                            {% endif %}
+                            
+                            <form method="post" action="{% url 'login' %}">
+                                {% csrf_token %}
+                                
+                                <div class="mb-4">
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-user text-muted"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="username" name="username" 
+                                               placeholder="Username" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-lock text-muted"></i>
+                                        </span>
+                                        <input type="password" class="form-control" id="password" name="password" 
+                                               placeholder="Password" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid mb-4">
+                                    <button type="submit" class="btn btn-login btn-lg text-white">
+                                        <i class="fas fa-sign-in-alt me-2"></i> Login
+                                    </button>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <p>Don't have an account? <a href="{% url 'signup' %}" class="fw-bold text-primary">Sign up</a></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

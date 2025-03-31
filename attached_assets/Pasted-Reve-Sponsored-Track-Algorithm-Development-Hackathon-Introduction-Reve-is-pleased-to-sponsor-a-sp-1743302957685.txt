@@ -1,0 +1,55 @@
+Reve Sponsored Track: Algorithm Development Hackathon
+Introduction
+Reve is pleased to sponsor a special track at the Nirma University Hackathon, dedicated to
+fostering innovation and excellence among students in software algorithm development.
+This exciting competition invites talented young minds to apply their skills to address
+significant real-world challenges in two critical domains: Digital Healthcare and Digital
+Farming. Participants will have access to specialized data sets and sensor information
+provided by Reve, enabling them to craft innovative, impactful solutions.
+Challenge Domains:
+1. Digital Healthcare
+• Participants will develop algorithms focused on early and accurate detection of
+various cancers, including breast cancer, throat cancer, and skin cancer, leveraging
+data from Reve’s advanced optical spectrometer and digital imaging technologies.
+• Objectives:
+• Analyze optical spectrometer data and high-resolution digital images.
+• Build algorithms capable of identifying biomarkers and spectral signatures indicative
+of cancer.
+• Enhance the accuracy, reliability, and speed of non-invasive cancer diagnostics.
+Data Provided:
+• Optical Spectrometer data (spectral reflectance and absorption data).
+• Digital Camera images (high-resolution clinical-grade images).
+2. Digital Farming
+Participants will create intelligent algorithms aimed at improving soil health assessment and
+crop management, using Reve’s Spectrometer data combined with multi-parameter soil
+sensor data and capacitive moisture sensing technologies.
+
+Objectives:
+• Develop algorithms to interpret complex spectroscopic soil data.
+• Identify and predict soil health indicators, including moisture content, nutrient levels,
+organic matter, and overall fertility.
+• Provide actionable insights for farmers to improve crop yields, sustainability, and
+productivity.
+
+Data Provided:
+• Reve Spectrometer soil spectral data.
+• Multi-parameter soil sensor data (moisture, pH, nutrients, salinity, temperature,
+conductivity, and organic content).
+• Capacitive soil moisture sensor data for precise moisture profiling.
+Evaluation Criteria
+Participants' submissions will be evaluated based on:
+• Accuracy and reliability of the developed algorithms.
+• Innovation and originality in approach.
+• Practical applicability and potential impact of solutions.
+• Efficiency and scalability of algorithms.
+• Presentation and clarity of documented solutions.
+Rewards
+Outstanding solutions will be recognized with:
+a. Internship at Reve AI Private Limited.
+b. Job opportunities in the field of Digital healthcare, Digital farming, Nano sciences,
+Quantum sciences etc in advancing critical fields.
+Conclusion
+We at Reve encourage students to bring forward their best ideas and technical expertise to
+develop groundbreaking solutions in Digital Healthcare and Digital Farming. Your creativity
+and innovation have the power to significantly contribute to societal well-being and
+sustainable development.
